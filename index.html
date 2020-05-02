@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>POKEDEX</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/spinner.css">
+    <link rel="stylesheet" href="styles/transitions.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <!-- <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> -->
+</head>
+
+<body>
+    <div id="app">
+
+        <div class="sk-chase center" style="position: absolute;" v-show="!isLoaded">
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+            <div class="sk-chase-dot"></div>
+        </div>
+
+
+        <div class="container" v-show="isLoaded">
+            <div class="row" data-aos="fade-up" data-aos-anchor-placement="center-center">
+                <div class="col-sm-6 col-md-3 col-lg-2" v-for="pokemon in pokemonData">
+                    <div class="card" data-toggle="modal" data-target="#modal" v-bind:key="pokemon.id"
+                        v-on:click="clickedPokemon = pokemon"
+                        v-bind:style="{ background: getBackgroundColor(pokemon.types) }">
+                        <img class="card-img" @load="handleLoad" @error="handleLoad"
+                            v-bind:src="pokemon.sprites.front_default">
+                        <div class="card-body">
+                            <p class="card-text">{{ pokemon.name.toUpperCase() }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal" v-bind:style="{ background: getBackgroundColor(clickedPokemon.types) }"
+            v-if="clickedPokemon">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                    <div class="modal-header row">
+                        <img class="card-img col-4 modal-header-image"
+                            v-bind:src="clickedPokemon.sprites.front_default">
+                        <h5 class="modal-title col-8">{{ clickedPokemon.name.toUpperCase() }}</h5>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div style="margin-bottom: 20px;">
+                            <div style="padding: 3px;" v-for="type in clickedPokemon.types">
+                                <div class="col-4" v-bind:style="{ background: typeColor[type.type.name]}"
+                                    style="margin: 0 auto; text-align: center;">
+                                    {{ type.type.name}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="row">
+
+                        <div class="row stat-info" v-for="stat in clickedPokemon.stats">
+                            <div class="col-4">
+                                <p class="stat-name">{{ stat.stat.name.toUpperCase() }}</p>
+                            </div>
+                            <div class="progress col-7">
+                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
+                                    v-bind:style="{ width: (parseInt(stat.base_stat / 1.7)) + '%' }">
+                                    {{ stat.base_stat }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+      </script> -->
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
