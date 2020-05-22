@@ -2,11 +2,15 @@ var app = new Vue({
     el: "#app",
     data: {
         pokemonData: [],
+        filteredPokemonData: [],
+        favorites: [],
         clickedPokemon: null,
-        isLoaded: false,
         imgLoaded: 0,
-        visible: true,
-        pokemonCardsToLoad: 132,
+        pokemonCardsToLoad: 9,
+        isLoaded: false,
+        showAlert: false,
+        showFavorites: false,
+        keyword: '',
         typeColor: {
             "normal": "#A8A77A",
             "fire": "#EE8130",
@@ -35,12 +39,74 @@ var app = new Vue({
                 this.isLoaded = true;
             }
         },
-        getBackgroundColor(types) {
+
+        getBackgroundColor: function (types) {
             type1 = types[0].type.name;
             type2 = types[1] ? types[1].type.name : type1
             return `linear-gradient(90deg, ${this.typeColor[type1]} 50%, ${this.typeColor[type2]} 50%)`
         },
+
+        displayFavorites: function () {
+            this.showFavorites = true;
+        },
+
+        home: function () {
+            this.showFavorites = false;
+        },
+
+        sortArray: function() {
+            this.pokemonData.sort((a, b) => a.stats[0].base_stat - b.stats[0].base_stat);
+        },
+
+        addToFavorites: function (pokemon) {
+            if (this.favorites.indexOf(pokemon) === -1) {
+                this.favorites.push(pokemon);
+            }
+        },
+
+        clearFavorites: function () {
+            window.localStorage.removeItem('favorites');
+            this.favorites = [];
+        },
+
+        searchPokemon() {
+            that = this;
+            this.pokemonData = this.filteredPokemonData.filter(function (pokemon) {
+                if (pokemon.name.toLowerCase().indexOf(that.keyword.toLowerCase()) !== -1) {
+                    return pokemon;
+                }
+            });
+        },
+
+        getProgressBarWidth: function (base_stat) {
+            return parseInt(base_stat / 1.7) + '%'
+        },
+
+        mouseover: function () {
+            this.showAlert = true;
+        },
+
+        mouseleave: function () {
+            this.showAlert = false;
+        },
     },
+
+    watch: {
+        favorites: {
+            // if there is an error with localstorage, disable blocking third-party cookies
+            handler() {
+                localStorage.setItem('favorites', JSON.stringify(this.favorites));
+            },
+            deep: true,
+        },
+    },
+
+    mounted() {
+        if (localStorage.getItem('favorites')) {
+            this.favorites = JSON.parse(localStorage.getItem('favorites'));
+        }
+    },
+
     created: function () {
         for (var i = 1; i <= this.pokemonCardsToLoad; i++) {
             fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
@@ -49,12 +115,13 @@ var app = new Vue({
                     this.pokemonData.push(data);
                 })
         }
+        this.filteredPokemonData = this.pokemonData;
     },
 });
 
-$('#modal').on('shown.bs.modal', function () {
-    $('#myInput').trigger('focus')
-});
+// $('#modal').on('shown.bs.modal', function () {
+//     $('#myInput').trigger('focus')
+// });
 
 // function testAnim(x) {
 //     $('.modal .modal-dialog').attr('class', 'modal-dialog ' + x + ' animated');

@@ -1,21 +1,16 @@
-
-
-
-
 body {
     background-image: url("images/pokemon5.jpg");
-    background-attachment: fixed;
-}
-
-.card-body {
-    text-align: center;
-    padding-bottom: 1.25rem;
-    margin-top: -30px;
 }
 
 .card {
     cursor: pointer;
     margin: 5px;
+}
+
+.card .card-body {
+    text-align: center;
+    padding: 1.25rem 1.25rem 5px 1.25rem;
+    margin-top: -30px;
 }
 
 .card-img {

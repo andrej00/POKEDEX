@@ -10,12 +10,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
     <!-- <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> -->
+    <script src="https://kit.fontawesome.com/a5243aa500.js" crossorigin="anonymous"></script>
+
+    <!-- https://codepen.io/omarrr/full/zNZXKo/ -->
+
 </head>
 
 <body>
     <div id="app">
-
-        <div class="sk-chase center" style="position: absolute;" v-show="!isLoaded">
+        <div class="sk-chase center" style="position: absolute;" v-if="!isLoaded">
             <div class="sk-chase-dot"></div>
             <div class="sk-chase-dot"></div>
             <div class="sk-chase-dot"></div>
@@ -24,17 +27,73 @@
             <div class="sk-chase-dot"></div>
         </div>
 
+        <div class="alert alert-primary" style="position: absolute; z-index: 999; margin: 0 auto" role="alert"
+            v-if="showAlert">
+            A simple primary alert—check it out!
+        </div>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+            <a class="navbar-brand" href="#">POKEDEX</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" @click="home" href="#">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" @click="displayFavorites" href="#">Favorites</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" @click="clearFavorites" href="#">Clear favorites</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto" style="margin-right: 10px">
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sort by
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" @click="sortArray" href="#">speed</a>
+                            <a class="dropdown-item" href="#">special-defense</a>
+                            <a class="dropdown-item" href="#">special-attack</a>
+                            <a class="dropdown-item" href="#">defense</a>
+                            <a class="dropdown-item" href="#">attach</a>
+                            <a class="dropdown-item" href="#">HP</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input class="form-control  mr-sm-2" v-model="keyword" @input='searchPokemon' type="search"
+                        placeholder="Search">
+                </form>
+            </div>
+        </nav>
 
         <div class="container" v-show="isLoaded">
-            <div class="row" data-aos="fade-up" data-aos-anchor-placement="center-center">
-                <div class="col-sm-6 col-md-3 col-lg-2" v-for="pokemon in pokemonData">
-                    <div class="card" data-toggle="modal" data-target="#modal" v-bind:key="pokemon.id"
-                        v-on:click="clickedPokemon = pokemon"
-                        v-bind:style="{ background: getBackgroundColor(pokemon.types) }">
+            <div class="row">
+                <div class="col-sm-6 col-md-3 col-lg-2" v-for="pokemon in (!showFavorites ? pokemonData : favorites)">
+                    <!-- <div class="col-sm-6 col-md-3 col-lg-2" v-for="pokemon in pokemonData"> -->
+                    <div class="card" data-toggle="modal" data-target="#modal" 
+                        :key="pokemon.id"
+                        @click="clickedPokemon = pokemon"
+                        :style="{ background: getBackgroundColor(pokemon.types) }">
+
                         <img class="card-img" @load="handleLoad" @error="handleLoad"
-                            v-bind:src="pokemon.sprites.front_default">
+                            :src="pokemon.sprites.front_default">
+
                         <div class="card-body">
-                            <p class="card-text">{{ pokemon.name.toUpperCase() }}</p>
+                            <p class="card-text" style="margin-bottom: 5px;">{{ pokemon.name.toUpperCase() }}</p>
+                            <span style="font-size: 1.3em; color: yellow;" 
+                                @mouseover.stop="mouseover"
+                                @mouseleave.stop="mouseleave" 
+                                @click.stop="addToFavorites(pokemon)">
+                                <i class="fas fa-star"></i>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -43,10 +102,10 @@
 
         <div class="modal fade" id="modal" v-bind:style="{ background: getBackgroundColor(clickedPokemon.types) }"
             v-if="clickedPokemon">
-            <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
 
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
 
@@ -71,16 +130,18 @@
 
                         <div class="row stat-info" v-for="stat in clickedPokemon.stats">
                             <div class="col-4">
-                                <p class="stat-name">{{ stat.stat.name.toUpperCase() }}</p>
+                                <p class="stat-name">
+                                    {{ stat.stat.name.toUpperCase() }}
+                                </p>
                             </div>
                             <div class="progress col-7">
-                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar"
-                                    v-bind:style="{ width: (parseInt(stat.base_stat / 1.7)) + '%' }">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                                    v-bind:style="{ width: getProgressBarWidth(stat.base_stat) }">
                                     {{ stat.base_stat }}
                                 </div>
                             </div>
-
                         </div>
+
                     </div>
 
                     <div class="modal-footer">
@@ -92,11 +153,6 @@
         </div>
 
     </div>
-
-    <!-- <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        AOS.init();
-      </script> -->
 
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
