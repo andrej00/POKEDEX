@@ -51,7 +51,7 @@
             <a class="nav-link" @click="loadMore" href="#">Load More</a>
           </li>
         </ul>
-        <ul class="navbar-nav ml-auto" style="margin-right: 10px">
+        <ul class="navbar-nav ml-auto" style="margin-right: 10px" v-show="!showFavorites">
           <li class="nav-item dropdown active">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,7 +67,7 @@
             </div>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
+        <form class="form-inline my-2 my-lg-0" v-show="!showFavorites">
           <input class="form-control  mr-sm-2" v-model="keyword" @input='searchPokemon' type="search"
             placeholder="Search">
         </form>
