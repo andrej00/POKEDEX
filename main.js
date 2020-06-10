@@ -37,9 +37,10 @@ var app = new Vue({
   methods: {
     handleLoad: function () {
       this.imgLoaded++;
-      if (this.imgLoaded === this.pokemonCardsToLoad) {
+      if (this.imgLoaded >= this.pokemonCardsToLoad) {
         this.isLoaded = true;
       }
+      console.log(this.isLoaded);
     },
 
     getBackgroundColor: function (types) {

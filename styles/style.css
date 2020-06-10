@@ -46,11 +46,18 @@ body {
 }
 
 .stat-info {
-    margin-bottom: -10px;
+  margin-bottom: -10px;
 }
 
 .stat-name {
-    text-align: right;
+  text-align: right;
+}
+
+.type {
+  margin: 0 auto;
+  text-align: center;
+  font-size: 20px;
+  color: #fff;
 }
 
 .container .row .col-sm-6,
