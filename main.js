@@ -2,11 +2,12 @@ var app = new Vue({
   el: "#app",
   data: {
     pokemonData: [],
+    i: 1,
     filteredPokemonData: [],
     favorites: [],
     clickedPokemon: null,
     imgLoaded: 0,
-    pokemonCardsToLoad: 9,
+    pokemonCardsToLoad: 32,
     isLoaded: false,
     showAlert: false,
     showFavorites: false,
@@ -91,6 +92,23 @@ var app = new Vue({
     mouseleave: function () {
       this.showAlert = false;
     },
+
+    loadPokemons: function() {
+      for (this.i; this.i <= this.pokemonCardsToLoad; this.i += 1) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${this.i}`)
+          .then((response) => response.json())
+          .then((data) => {
+            this.pokemonData.push(data);
+          })
+      }
+      this.filteredPokemonData = this.pokemonData;
+    },
+
+    loadMore: function() {
+      this.isLoaded = false;
+      this.pokemonCardsToLoad += 32;
+      this.loadPokemons();
+    }
   },
 
   watch: {
@@ -110,13 +128,6 @@ var app = new Vue({
   },
 
   created: function () {
-    for (var i = 1; i <= this.pokemonCardsToLoad; i++) {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${i}`)
-        .then((response) => response.json())
-        .then((data) => {
-          this.pokemonData.push(data);
-        })
-    }
-    this.filteredPokemonData = this.pokemonData;
+    this.loadPokemons();
   },
 });
