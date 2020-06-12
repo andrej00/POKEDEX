@@ -7,6 +7,15 @@ body {
   margin: 5px;
 }
 
+#app .alert {
+  position: fixed;
+  top: 5%; 
+  left:25%;
+  width: 50%; 
+  z-index: 1199; 
+  text-align: center;
+}
+
 .card .card-body {
   text-align: center;
   padding: 1.25rem 1.25rem 5px 1.25rem;

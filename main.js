@@ -11,7 +11,9 @@ var app = new Vue({
     isLoaded: false,
     showAlert: false,
     showFavorites: false,
+    pokemonInFavorites: false,
     keyword: '',
+    addedToFavorites: false,
     typeColor: {
       "normal": "#A8A77A",
       "fire": "#EE8130",
@@ -36,11 +38,11 @@ var app = new Vue({
   },
   methods: {
     handleLoad: function () {
+      console.log('here');
       this.imgLoaded++;
       if (this.imgLoaded >= this.pokemonCardsToLoad) {
         this.isLoaded = true;
       }
-      console.log(this.isLoaded);
     },
 
     getBackgroundColor: function (types) {
@@ -63,8 +65,20 @@ var app = new Vue({
     },
 
     addToFavorites: function (pokemon) {
-      if (this.favorites.indexOf(pokemon) === -1) {
+      // checks if pokemon is already in favorites, if not add to favorites
+      if (!this.favorites.some(el => el.id === pokemon.id)) {
         this.favorites.push(pokemon);
+        this.showAlert = false;
+        this.addedToFavorites = true;
+        setTimeout(() => { 
+          this.addedToFavorites = false;
+         }, 2000);
+      } else {
+        this.pokemonInFavorites = true;
+        this.showAlert = false;
+        setTimeout(() => { 
+          this.pokemonInFavorites = false;
+         }, 2000);
       }
     },
 
@@ -74,9 +88,8 @@ var app = new Vue({
     },
 
     searchPokemon() {
-      that = this;
-      this.pokemonData = this.filteredPokemonData.filter(function (pokemon) {
-        if (pokemon.name.toLowerCase().indexOf(that.keyword.toLowerCase()) !== -1) {
+      this.pokemonData = this.filteredPokemonData.filter((pokemon) => {
+        if (pokemon.name.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1) {
           return pokemon;
         }
       });
