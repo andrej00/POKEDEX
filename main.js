@@ -38,7 +38,6 @@ var app = new Vue({
   },
   methods: {
     handleLoad: function () {
-      console.log('here');
       this.imgLoaded++;
       if (this.imgLoaded >= this.pokemonCardsToLoad) {
         this.isLoaded = true;
