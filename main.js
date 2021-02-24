@@ -64,20 +64,20 @@ var app = new Vue({
     },
 
     addToFavorites: function (pokemon) {
-      // checks if pokemon is already in favorites, if not add to favorites
+
       if (!this.favorites.some(el => el.id === pokemon.id)) {
         this.favorites.push(pokemon);
-        this.showAlert = false;
         this.addedToFavorites = true;
         setTimeout(() => { 
           this.addedToFavorites = false;
-         }, 2000);
+         }, 1200);
       } else {
         this.pokemonInFavorites = true;
-        this.showAlert = false;
+        const index = this.favorites.findIndex(x => x.id === pokemon.id);
+        this.favorites.splice(index, 1);
         setTimeout(() => { 
           this.pokemonInFavorites = false;
-         }, 2000);
+         }, 1200);
       }
     },
 
@@ -92,6 +92,13 @@ var app = new Vue({
           return pokemon;
         }
       });
+    },
+
+    checkFavorites(pokemon) {
+      if (this.favorites.some(el => el.id === pokemon.id)) {
+        return true;
+      }
+      return false;
     },
 
     getProgressBarWidth: function (base_stat) {
@@ -121,6 +128,15 @@ var app = new Vue({
       this.isLoaded = false;
       this.pokemonCardsToLoad += 32;
       this.loadPokemons();
+    }
+  },
+
+  computed: {
+    classObject: function () {
+      return {
+        active: this.isActive && !this.error,
+        'text-danger': this.error && this.error.type === 'fatal'
+      }
     }
   },
 

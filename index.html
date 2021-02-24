@@ -26,16 +26,12 @@
       <div class="sk-chase-dot"></div>
     </div>
 
-    <div class="alert alert-primary" id="success-alert" role="alert" v-show="showAlert">
-      CLICK TO ADD POKEMON TO FAVORITES
-    </div>
-
     <div class="alert alert-primary" id="success-alert" role="alert" v-show="addedToFavorites">
       POKEMON ADDED TO FAVORITES
     </div>
 
     <div class="alert alert-primary" id="success-alert" role="alert" v-show="pokemonInFavorites">
-      POKEMON ALREADY EXISTS IN FAVORITES
+      POKEMON REMOVED FROM FAVORITES
     </div>
 
     <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
@@ -93,9 +89,9 @@
 
             <div class="card-body">
               <p class="card-text" style="margin-bottom: 5px;">{{ pokemon.name.toUpperCase() }}</p>
-              <span style="font-size: 1.3em; color: yellow;" @mouseover.stop="mouseover" @mouseleave.stop="mouseleave"
-                @click.stop="addToFavorites(pokemon)">
-                <i class="fas fa-star"></i>
+              <span style="font-size: 1.3em; color: yellow;" @click.stop="addToFavorites(pokemon)">
+                <!-- <i class="fas fa-star"></i> -->
+                <i :class="[checkFavorites(pokemon) ? 'fas fa-star' : '', 'far fa-star']"></i>
               </span>
             </div>
           </div>
