@@ -1,3 +1,3 @@
 # POKEDEX
 
-https://nostalgic-mclean-51dc85.netlify.app/
+https://hungry-jennings-772724.netlify.app/
